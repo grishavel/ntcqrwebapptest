@@ -30,6 +30,8 @@
         }
 
         docReady(function() {
+            const queryParams = new URLSearchParams(window.location.search):
+            const chatId = queryParams.get('chat_id');
             var lastResult;
             function onScanSuccess(decodedText, decodedResult) {
                 if (decodedText !== lastResult) {
@@ -37,7 +39,7 @@
                     document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
                     console.log('Отправка данных: ${decodedText}');
                     // Отправляем результат обратно в бота и закрываем WebApp
-                    Telegram.WebApp.sendData(decodedText);
+                    Telegram.WebApp.sendData(JSON.stringify({ chat_id: chatID, text: decodedText}));
                 }
             }
 
