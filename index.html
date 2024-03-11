@@ -35,8 +35,9 @@
                 if (decodedText !== lastResult) {
                     lastResult = decodedText;
                     document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
+                    console.log('Отправка данных: ${decodedText}');
                     // Отправляем результат обратно в бота и закрываем WebApp
-                    Telegram.WebApp.sendData("Тестовый текст");
+                    Telegram.WebApp.sendData(decodedText);
                 }
             }
 
