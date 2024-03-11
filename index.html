@@ -15,12 +15,22 @@
             max-width: 500px;
             word-wrap: break-word;
         }
+        .send-button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="reader"></div>
     <div id="qr-result">Результат сканирования будет показан здесь</div>
-    <div id="debug"></div>
+    <button class="send-button" id="send-data">Отправить данные</button>
     <script>
        function docReady(fn) {
            if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -31,35 +41,31 @@
        }
 
        docReady(function() {
-    const queryParams = new URLSearchParams(window.location.search);
-    const chatId = queryParams.get(`chat_id`); // Убедитесь, что этот параметр передается правильно
-    document.getElementById(`debug`).textContent = `Chat ID: ${chatId}`;
-    console.log(`Chat ID: ${chatId}`);
+            const queryParams = new URLSearchParams(window.location.search);
+            const chatId = queryParams.get('chat_id');
+            var lastResult;
 
-    var lastResult;
-    function onScanSuccess(decodedText, decodedResult) {
-        if (decodedText !== lastResult) {
-            lastResult = decodedText;
-            document.getElementById(`qr-result`).textContent = `Результат: ${decodedText}`;
-            // Проверьте, что chatId действительно получен
-            if (chatId) {
-                // Отправляем результат обратно в бота с chat_id, если он есть
-                Telegram.WebApp.sendData(JSON.stringify({ chat_id: chatId, text: decodedText }));
-            } else {
-                // Если chat_id нет, отправляем просто текст
-                Telegram.WebApp.sendData(decodedText);
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    lastResult = decodedText;
+                    document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
+                }
             }
-        }
-    }
 
-    function onScanError(errorMessage) {
-        console.error(errorMessage);
-    }
+            function onScanError(errorMessage) {
+                console.error(errorMessage);
+            }
 
-    var html5QrCode = new Html5Qrcode("reader");
-    var config = { fps: 10, qrbox: { width: 250, height: 250 } };
-    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
-});
+            document.getElementById('send-data').addEventListener('click', function() {
+                if (lastResult && chatId) {
+                    Telegram.WebApp.sendData(JSON.stringify({ chat_id: chatId, text: lastResult }));
+                }
+            });
+
+            var html5QrCode = new Html5Qrcode("reader");
+            var config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
+        });
    </script>
 </body>
 </html>
