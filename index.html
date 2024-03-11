@@ -9,15 +9,19 @@
             max-width: 500px;
             margin: auto;
         }
+        #qr-result {
+            margin-top: 20px;
+            max-width: 500px;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
     <div id="reader"></div>
+    <div id="qr-result">Результат сканирования будет показан здесь</div>
     <script>
         function docReady(fn) {
-            // see if DOM is already available
             if (document.readyState === "complete" || document.readyState === "interactive") {
-                // call on next available tick
                 setTimeout(fn, 1);
             } else {
                 document.addEventListener("DOMContentLoaded", fn);
@@ -25,18 +29,24 @@
         }
 
         docReady(function() {
-            var lastResult, countResults = 0;
+            var lastResult;
             function onScanSuccess(decodedText, decodedResult) {
                 if (decodedText !== lastResult) {
-                    ++countResults;
                     lastResult = decodedText;
-                    // Handle on success condition with the decoded message.
-                    console.log(`Scan result ${decodedText}`, decodedResult);
+                    document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
+                    // Остановка сканирования после первого совпадения
+                    html5QrCode.stop();
                 }
             }
 
-            var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }, false);
-            html5QrcodeScanner.render(onScanSuccess);
+            function onScanError(errorMessage) {
+                // Ошибка сканирования
+                console.error(errorMessage);
+            }
+
+            var html5QrCode = new Html5Qrcode("reader");
+            var config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
         });
     </script>
 </body>
