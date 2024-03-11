@@ -36,19 +36,23 @@
     <button class="button" onclick="copyToClipboard()">Копировать текст</button>
 
     <script>
+        let html5QrCode;
+
         function onScanSuccess(decodedText, decodedResult) {
-            // Handle on success condition with the decoded text or result.
             document.getElementById('qr-result').textContent = decodedText;
-            console.log(`Scan result: ${decodedText}`, decodedResult);
+            html5QrCode.stop().then(() => {
+                console.log(`Scan result: ${decodedText}`, decodedResult);
+            }).catch(err => {
+                console.error('Error stopping the QR scanner', err);
+            });
         }
 
         function onScanError(errorMessage) {
-            // handle on error condition, with error message
             console.error(errorMessage);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            let html5QrCode = new Html5Qrcode("reader");
+            html5QrCode = new Html5Qrcode("reader");
             html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess, onScanError);
         });
 
