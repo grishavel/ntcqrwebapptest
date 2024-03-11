@@ -20,6 +20,7 @@
 <body>
     <div id="reader"></div>
     <div id="qr-result">Результат сканирования будет показан здесь</div>
+    <div id="debug"></div>
     <script>
        function docReady(fn) {
            if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -32,6 +33,8 @@
        docReady(function() {
     const queryParams = new URLSearchParams(window.location.search);
     const chatId = queryParams.get('chat_id'); // Убедитесь, что этот параметр передается правильно
+    document.getElementById('debug').textContent = 'Chat ID: ${chatId}';
+    console.log('Chat ID: ${chatId}');
 
     var lastResult;
     function onScanSuccess(decodedText, decodedResult) {
