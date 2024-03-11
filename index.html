@@ -2,22 +2,36 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>QR Scanner</title>
+    <title>Ваш Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-    <div id="qr-result">Результат сканирования будет отображаться здесь</div>
-    <button onclick="scanQR()">Сканировать QR-код</button>
-
     <script>
-        function scanQR() {
-            Telegram.WebApp.showScanQrPopup();
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Убедитесь, что Telegram Web App доступен
+            if (window.Telegram) {
+                Telegram.WebApp.ready();
 
-        Telegram.WebApp.onEvent('qrTextReceived', (qrText) => {
-            document.getElementById('qr-result').textContent = qrText;
-            Telegram.WebApp.closeScanQrPopup();
+                // Настройте основную кнопку
+                Telegram.WebApp.MainButton.setText("Отправить");
+                Telegram.WebApp.MainButton.show();
+                Telegram.WebApp.MainButton.onClick(() => {
+                    // Логика при нажатии на основную кнопку
+                    // Например, отправка данных обратно в ваш бот
+                    Telegram.WebApp.sendData("Ваши данные здесь");
+                });
+
+                // Пример: Реакция на сканирование QR-кода
+                Telegram.WebApp.onEvent('qrScan', (event) => {
+                    // Обработка текста QR-кода
+                    // 'event.data' содержит текст QR-кода
+                    console.log(event.data); // Используйте эти данные в соответствии с функциональностью вашего приложения
+                });
+            }
         });
     </script>
+</head>
+<body>
+    <h1>Добро пожаловать в ваш Mini App!</h1>
+    <p>Настройте эту страницу в соответствии с потребностями вашего приложения. Добавьте формы, информацию или другие интерактивные элементы здесь.</p>
+    <!-- Содержимое вашего веб-приложения будет здесь -->
 </body>
 </html>
