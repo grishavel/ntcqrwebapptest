@@ -32,15 +32,15 @@
 
        docReady(function() {
     const queryParams = new URLSearchParams(window.location.search);
-    const chatId = queryParams.get('chat_id'); // Убедитесь, что этот параметр передается правильно
-    document.getElementById('debug').textContent = 'Chat ID: ${chatId}';
-    console.log('Chat ID: ${chatId}');
+    const chatId = queryParams.get(`chat_id`); // Убедитесь, что этот параметр передается правильно
+    document.getElementById(`debug`).textContent = `Chat ID: ${chatId}`;
+    console.log(`Chat ID: ${chatId}`);
 
     var lastResult;
     function onScanSuccess(decodedText, decodedResult) {
         if (decodedText !== lastResult) {
             lastResult = decodedText;
-            document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
+            document.getElementById(`qr-result`).textContent = `Результат: ${decodedText}`;
             // Проверьте, что chatId действительно получен
             if (chatId) {
                 // Отправляем результат обратно в бота с chat_id, если он есть
