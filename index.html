@@ -14,48 +14,40 @@
             max-width: 500px;
             word-wrap: break-word;
         }
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
     <div id="reader"></div>
     <div id="qr-result">Результат сканирования будет показан здесь</div>
-    <button class="button" onclick="copyToClipboard()">Копировать текст</button>
     <script>
         function docReady(fn) {
-            // Same docReady function...
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
         }
 
         docReady(function() {
-            // Initialization of QR code scanner...
+            var lastResult;
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    lastResult = decodedText;
+                    document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
+                    // Остановка сканирования после первого совпадения
+                    html5QrCode.stop();
+                }
+            }
+
+            function onScanError(errorMessage) {
+                // Ошибка сканирования
+                console.error(errorMessage);
+            }
+
+            var html5QrCode = new Html5Qrcode("reader");
+            var config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
         });
-
-        function onScanSuccess(decodedText, decodedResult) {
-            // QR code result handling...
-            document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
-        }
-
-        function onScanError(errorMessage) {
-            // Error handling...
-        }
-
-        function copyToClipboard() {
-            var text = document.getElementById('qr-result').textContent;
-            navigator.clipboard.writeText(text).then(function() {
-                alert('Текст скопирован!');
-            }, function(err) {
-                console.error('Ошибка при копировании: ', err);
-            });
-        }
     </script>
 </body>
 </html>
