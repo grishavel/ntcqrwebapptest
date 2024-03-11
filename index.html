@@ -3,6 +3,7 @@
 <head>
     <title>QR Code Scanner</title>
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         #reader {
             width: 100%;
@@ -34,13 +35,12 @@
                 if (decodedText !== lastResult) {
                     lastResult = decodedText;
                     document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
-                    // Остановка сканирования после первого совпадения
-                    html5QrCode.stop();
+                    // Отправляем результат обратно в бота и закрываем WebApp
+                    Telegram.WebApp.sendData(decodedText);
                 }
             }
 
             function onScanError(errorMessage) {
-                // Ошибка сканирования
                 console.error(errorMessage);
             }
 
