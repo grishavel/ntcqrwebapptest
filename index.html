@@ -30,13 +30,22 @@
        }
 
        docReady(function() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const chatId = queryParams.get('chat_id'); // Убедитесь, что этот параметр передается правильно
+
     var lastResult;
     function onScanSuccess(decodedText, decodedResult) {
         if (decodedText !== lastResult) {
             lastResult = decodedText;
             document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
-            // Тестовая отправка без chat_id
-            Telegram.WebApp.sendData(decodedText);
+            // Проверьте, что chatId действительно получен
+            if (chatId) {
+                // Отправляем результат обратно в бота с chat_id, если он есть
+                Telegram.WebApp.sendData(JSON.stringify({ chat_id: chatId, text: decodedText }));
+            } else {
+                // Если chat_id нет, отправляем просто текст
+                Telegram.WebApp.sendData(decodedText);
+            }
         }
     }
 
