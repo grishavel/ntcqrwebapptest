@@ -21,36 +21,36 @@
     <div id="reader"></div>
     <div id="qr-result">Результат сканирования будет показан здесь</div>
     <script>
-        function docReady(fn) {
-            if (document.readyState === "complete" || document.readyState === "interactive") {
-                setTimeout(fn, 1);
-            } else {
-                document.addEventListener("DOMContentLoaded", fn);
-            }
-        }
+       function docReady(fn) {
+           if (document.readyState === "complete" || document.readyState === "interactive") {
+               setTimeout(fn, 1);
+           } else {
+               document.addEventListener("DOMContentLoaded", fn);
+           }
+       }
 
-        docReady(function() {
-            const queryParams = new URLSearchParams(window.location.search):
-            const chatId = queryParams.get('chat_id');
-            var lastResult;
-            function onScanSuccess(decodedText, decodedResult) {
-                if (decodedText !== lastResult) {
-                    lastResult = decodedText;
-                    document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
-                    console.log('Отправка данных: ${decodedText}');
-                    // Отправляем результат обратно в бота и закрываем WebApp
-                    Telegram.WebApp.sendData(JSON.stringify({ chat_id: chatID, text: decodedText}));
-                }
-            }
+       docReady(function() {
+           const queryParams = new URLSearchParams(window.location.search);
+           const chatId = queryParams.get('chat_id'); // Получаем chat_id из URL
 
-            function onScanError(errorMessage) {
-                console.error(errorMessage);
-            }
+           var lastResult;
+           function onScanSuccess(decodedText, decodedResult) {
+               if (decodedText !== lastResult) {
+                   lastResult = decodedText;
+                   document.getElementById('qr-result').textContent = `Результат: ${decodedText}`;
+                   // Отправляем результат обратно в бота и закрываем WebApp
+                   Telegram.WebApp.sendData(JSON.stringify({ chat_id: chatId, text: decodedText }));
+               }
+           }
 
-            var html5QrCode = new Html5Qrcode("reader");
-            var config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
-        });
-    </script>
+           function onScanError(errorMessage) {
+               console.error(errorMessage);
+           }
+
+           var html5QrCode = new Html5Qrcode("reader");
+           var config = { fps: 10, qrbox: { width: 250, height: 250 } };
+           html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
+       });
+   </script>
 </body>
 </html>
