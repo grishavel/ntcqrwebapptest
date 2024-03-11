@@ -10,15 +10,12 @@
     <button onclick="scanQR()">Сканировать QR-код</button>
 
     <script>
-        // Функция для запуска сканирования QR-кода
         function scanQR() {
             Telegram.WebApp.showScanQrPopup();
         }
 
-        // Обработчик события получения текста QR-кода
         Telegram.WebApp.onEvent('qrTextReceived', (qrText) => {
             document.getElementById('qr-result').textContent = qrText;
-            // Можно автоматически закрыть popup сканера QR-кода, если нужно
             Telegram.WebApp.closeScanQrPopup();
         });
     </script>
